@@ -1,43 +1,36 @@
-import request from "supertest";
-import { app, server } from "../src/app";
+import { name, version } from '@root/package.json'
+import request from 'supertest'
 
-describe("App", () => {
+import { app, server } from '@/app'
+
+describe('Service Tests', () => {
     afterAll(async () => {
-        await server.close();
-    });
+        server.close()
+    })
 
-    describe("GET /version", () => {
-        it("should basic version information", async () => {
+    describe('App Controller', () => {
+        test('version', async () => {
             // Arrange
-            //
-            const { name, version } = require("../package.json");
+            const expectedData = { version, name }
 
             // Act
-            //
-            const response = await request(app).get("/version");
+            const response = await request(app).get('/version')
 
             // Assert
-            //
-            expect(response.status).toBe(200);
-            expect(response.body).toEqual({ name, version });
-        });
-    });
+            expect(response.status).toBe(200)
+            expect(response.body).toEqual(expectedData)
+        })
 
-    describe("/detect/:detectorName", () => {
-        it("validates the incoming request", async () => {
+        test('health check', async () => {
             // Arrange
-            //
-            const badRequest = {};
+            const expectedData = { message: 'OK' }
 
             // Act
-            //
-            const response = await request(app)
-                .post("/detect/hello-detector")
-                .send(badRequest);
+            const response = await request(app).get('/health-check')
 
             // Assert
-            //
-            expect(response.status).toBe(200);
-        });
-    });
-});
+            expect(response.status).toBe(200)
+            expect(response.body).toEqual(expectedData)
+        })
+    })
+})

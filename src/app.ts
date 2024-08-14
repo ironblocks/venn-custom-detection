@@ -1,35 +1,58 @@
-import dotenv from "dotenv";
-import express from "express";
+import dotenv from 'dotenv'
+import express from 'express'
+import http from 'http'
 
-import helloDetectorController from "./hello-detector/controller";
+import { createLogger } from '@/helpers'
+import { router } from '@/router'
+
+export const logger = createLogger()
 
 // Global configs
 //
-dotenv.config();
-const PORT = process.env.PORT;
-const { name, version } = require("../package.json");
+dotenv.config()
+
+const MAX_SHUTDOWN_WAIT_TIME = 5000 // ms
+const PORT = Number(process.env.PORT)
+const HOST = process.env.HOST
+const URL = `http://${HOST}:${PORT}`
 
 // App setup
 //
-const app = express();
-app.use(express.json());
+const app = express()
+const server = http.createServer(app)
 
-// Version routes
-//
-app.get("/version", (req, res) => {
-    res.json({ name, version });
-});
+app.use(express.json())
+app.use(router)
 
-// Detector routes
-//
-app.use("/detect", helloDetectorController);
+const handleShutDown = (signal: NodeJS.Signals) => {
+    logger.info(`Received ${signal}. Shutting down gracefully...`)
+
+    server.close(err => {
+        if (err) {
+            logger.error('Failed to close server')
+            return
+        }
+
+        logger.info('Server process terminated')
+        process.exit(0)
+    })
+
+    // Force close server after n seconds
+    setTimeout(() => {
+        logger.warning('Forcing server shutdown')
+
+        process.exit(1)
+    }, MAX_SHUTDOWN_WAIT_TIME)
+}
 
 // Start the server
 //
-const server = app.listen(PORT, () => {
-    console.log(`Custom Detector is running on http://localhost:${PORT}`);
-});
+server.listen(PORT, HOST, () => logger.info(`Custom detector service started on ${URL}`))
+
+// Listen for termination signals
+process.on('SIGINT', handleShutDown)
+process.on('SIGTERM', handleShutDown)
 
 // Exports
 //
-export { app, server };
+export { app, server }

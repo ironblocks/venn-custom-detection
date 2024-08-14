@@ -1,12 +1,49 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
-    "strict": true,
+    /* Modules */
+    "module": "CommonJS",
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "outDir": "./dist"
+    "forceConsistentCasingInFileNames": true,
+    
+    /* Language and Environment */          
+    "target": "es6",
+
+    /* Type Checking */
+    "noImplicitAny": true,
+    "strict": true,                                     
+    "skipLibCheck": true, 
+    "allowJs": true,
+
+    /* Pathes and imports */
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@": [
+        "src"
+      ],
+      "@root/*": [
+        "./*"
+      ],
+      "@root": [
+        "./"
+      ]
+    },
+
+    /* Other features */
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "tests"]
+  "include": [
+    "**/*.ts",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
