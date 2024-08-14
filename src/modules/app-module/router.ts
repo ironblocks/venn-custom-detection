@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { AppController } from '@/controllers'
+import * as AppController from './controller'
 
 const appRouter = Router()
 
