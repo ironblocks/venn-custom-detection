@@ -2,6 +2,11 @@ import { name, version } from '@root/package.json'
 import request from 'supertest'
 
 import { app, server } from '@/app'
+import { DetectorResponse, DetectRequest } from '@/modules/detection-module/dtos'
+import { HTTP_STATUS_CODES } from '@/types'
+
+const ethereumAddress = '0xfdD055Cf3EaD343AD51f4C7d1F12558c52BaDFA5'
+const zeroAddress = '0x0000000000000000000000000000000000000000'
 
 describe('Service Tests', () => {
     afterAll(async () => {
@@ -14,10 +19,10 @@ describe('Service Tests', () => {
             const expectedData = { version, name }
 
             // Act
-            const response = await request(app).get('/version')
+            const response = await request(app).get('/app/version')
 
             // Assert
-            expect(response.status).toBe(200)
+            expect(response.status).toBe(HTTP_STATUS_CODES.OK)
             expect(response.body).toEqual(expectedData)
         })
 
@@ -26,11 +31,101 @@ describe('Service Tests', () => {
             const expectedData = { message: 'OK' }
 
             // Act
-            const response = await request(app).get('/health-check')
+            const response = await request(app).get('/app/health-check')
 
             // Assert
-            expect(response.status).toBe(200)
+            expect(response.status).toBe(HTTP_STATUS_CODES.OK)
             expect(response.body).toEqual(expectedData)
+        })
+    })
+
+    describe('Detection Controller', () => {
+        const requestPayload: Partial<DetectRequest> = {
+            id: 'unique-id',
+            chainId: 1,
+            hash: 'some hash',
+            protocolName: 'some protocol',
+            protocolAddress: zeroAddress,
+            trace: {
+                blockNumber: 12345,
+                from: ethereumAddress,
+                to: ethereumAddress,
+                transactionHash: 'some hash',
+                input: 'input',
+                output: 'output',
+                gas: '100000',
+                gasUsed: '100',
+                value: '10',
+                logs: [
+                    {
+                        address: ethereumAddress,
+                        data: '0x...',
+                        topics: ['0x...'],
+                    },
+                ],
+                calls: [
+                    {
+                        from: ethereumAddress,
+                        to: ethereumAddress,
+                        input: 'input',
+                        output: 'output',
+                        gasUsed: '100',
+                        value: '10',
+                    },
+                ],
+            },
+        }
+
+        test('detect success', async () => {
+            // Act
+            const response = await request(app)
+                .post('/detect/test-detector')
+                .send(requestPayload)
+                .set('Content-Type', 'application/json')
+
+            const body: DetectorResponse = response.body
+
+            // Assert
+            expect(response.status).toBe(HTTP_STATUS_CODES.OK)
+            expect(body.protocolName).toBe(requestPayload.protocolName)
+            expect(body.protocolAddress).toBe(requestPayload.protocolAddress)
+            expect(body.chainId).toBe(requestPayload.chainId)
+            expect(body.error).toBeFalsy()
+        })
+
+        test('detect validation', async () => {
+            const response = await request(app)
+                .post('/detect/test-detector')
+                .send({ ...requestPayload, protocolAddress: 'definitely not address' })
+                .set('Content-Type', 'application/json')
+
+            expect(response.status).toBe(HTTP_STATUS_CODES.BAD_REQUEST)
+        })
+
+        test('detect validation nested', async () => {
+            const response = await request(app)
+                .post('/detect/test-detector')
+                .send({
+                    ...requestPayload,
+                    trace: {
+                        ...requestPayload.trace,
+                        from: 'not valid address',
+                        to: 'not valid as well',
+                        logs: [
+                            {
+                                address: 'not address deeply nested',
+                                data: '0x...',
+                                topics: ['0x...'],
+                            },
+                        ],
+                    },
+                })
+                .set('Content-Type', 'application/json')
+
+            expect(response.status).toBe(HTTP_STATUS_CODES.BAD_REQUEST)
+            expect(response.body.message).toContain('trace.from')
+            expect(response.body.message).toContain('trace.to')
+            expect(response.body.message).toContain('trace.logs.0.address')
         })
     })
 })

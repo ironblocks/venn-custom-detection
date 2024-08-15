@@ -1,11 +1,12 @@
 import { Router } from 'express'
 
 /* IMPORT ALL YOUR ROUTERS */
-import { appRouter } from '@/modules'
+import { appRouter, detectionRouter } from '@/modules'
 
 const router = Router()
 
 /* ASSIGN EACH ROUTER TO DEDICATED SUBROUTE */
-router.use('/', appRouter)
+router.use('/app', appRouter)
+router.use('/', detectionRouter)
 
 export { router }

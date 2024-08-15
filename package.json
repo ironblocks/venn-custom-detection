@@ -34,6 +34,7 @@
         "dotenv": "^16.4.5",
         "ethers": "^6.13.2",
         "express": "^4.19.2",
+        "reflect-metadata": "^0.2.2",
         "undici-types": "^6.13.0",
         "uuid": "^10.0.0",
         "winston": "^3.14.1",
