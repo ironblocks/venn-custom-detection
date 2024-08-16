@@ -5,28 +5,11 @@ import { logger } from '@/app'
 import { ErrorHandler, validateRequest } from '@/helpers'
 import {
     DetectorRequestParams,
-    DetectorResponse,
     DetectRequest,
     getDetectorResponse,
 } from '@/modules/detection-module/dtos'
+import { DetectionService } from '@/modules/detection-module/service'
 import { PublicClassFields } from '@/types'
-
-// For this example, we'll just return a mock response, you can implement any logic
-const getDetectionResult__MOCKED = (request: DetectRequest): DetectorResponse => {
-    return {
-        requestId: request.id,
-        chainId: request.chainId,
-        detected: Math.random() < 0.5, // Random detection for demonstration
-        protocolAddress: request.protocolAddress,
-        protocolName: request.protocolName,
-        message: 'Example message',
-        error: false,
-        additionalData: {
-            detectorName: request.detectorName,
-            detectionTimestamp: new Date().toISOString(),
-        },
-    }
-}
 
 export const detect = async (
     req: Request<DetectorRequestParams, PublicClassFields<DetectRequest>>,
@@ -43,7 +26,7 @@ export const detect = async (
         // HERE YOU WOULD IMPLEMENT YOUR DETECTION LOGIC
         // YOUR CODE HERE
 
-        const result = getDetectionResult__MOCKED(request)
+        const result = DetectionService.detect(request)
 
         logger.debug('detect request finished succesfully')
 
