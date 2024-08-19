@@ -6,7 +6,7 @@ import { ErrorHandler, validateRequest } from '@/helpers'
 import {
     DetectorRequestParams,
     DetectRequest,
-    getDetectorResponse,
+    toDetectorResponse,
 } from '@/modules/detection-module/dtos'
 import { DetectionService } from '@/modules/detection-module/service'
 import { PublicClassFields } from '@/types'
@@ -23,15 +23,13 @@ export const detect = async (
         // validate request
         await validateRequest(request)
 
-        // HERE YOU WOULD IMPLEMENT YOUR DETECTION LOGIC
-        // YOUR CODE HERE
-
+        // perform business logic
         const result = DetectionService.detect(request)
 
         logger.debug('detect request finished succesfully')
 
         // return response
-        res.json(getDetectorResponse(result))
+        res.json(toDetectorResponse(result))
     } catch (error) {
         // handle errors
         ErrorHandler.processApiError(res, error)

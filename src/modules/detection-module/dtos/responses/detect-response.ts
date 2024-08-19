@@ -37,6 +37,6 @@ class DetectorResponseDTO {
     additionalData?: Record<string, unknown>
 }
 
-export const getDetectorResponse = (detectorEntity: DetectorResponse): DetectorResponseDTO => {
+export const toDetectorResponse = (detectorEntity: DetectorResponse): DetectorResponseDTO => {
     return plainToInstance(DetectorResponseDTO, detectorEntity)
 }
