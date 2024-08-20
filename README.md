@@ -44,7 +44,7 @@ export class DetectionService {
     }
 }
 ```
-3. Implement own `detect` method that will accept `DetectRequest` and return `DetectorResponse`. More detailed info about requests-responses structure can be find here. INSERT LINK
+3. Implement own `detect` method that will accept `DetectRequest` and return `DetectorResponse`. More **detailed info about requests-responses** structure can be find [here](https://github.com/ironblocks/venn-custom-detection/blob/master/docs/requests-responses.docs.md).
 4. Run `yarn dev`
 5. That's it! Custom detector service is up and running in dev mode.
 
