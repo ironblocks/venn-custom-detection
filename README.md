@@ -13,12 +13,40 @@ Template for easy integration with Venn Security Network as Security Provider. V
 
 ## Table of Contents
 - [Introduction](#venn-custom-detector-boilerplate)
+- [Quick Start](#quick-start)
 - [Description](#description)
 - [Usage:](#usage)
     - [Own implementation](#own-implementation)
     - [Env](#env)
     - [Development](#development)
     - [Production](#production)
+
+## Quick start
+1. Clone this repo
+2. Open `src/modules/detection-module/service.ts`
+```ts
+import { plainToInstance } from 'class-transformer'
+
+import { DetectorResponse, DetectRequest } from './dtos'
+
+// For this example, we'll just return a mock response, you can implement any logic
+export class DetectionService {
+    public static detect(request: DetectRequest): DetectorResponse {
+        return plainToInstance(DetectorResponse, {
+            requestId: request.id,
+            chainId: request.chainId,
+            detected: Math.random() < 0.5, // Random detection for demonstration
+            protocolAddress: request.protocolAddress,
+            protocolName: request.protocolName,
+            message: 'Example message',
+            error: false,
+        })
+    }
+}
+```
+3. Implement own `detect` method that will accept `DetectRequest` and return `DetectorResponse`. More detailed info about requests-responses structure can be find here. INSERT LINK
+4. Run `yarn dev`
+5. That's it! Custom detector service is up and running in dev mode.
 
 ## Description
 Template is pre-configured as `Node.js` + `Express.js` web-service, that can be used to write own security logic. Main goal of this repo is to ease this process.
