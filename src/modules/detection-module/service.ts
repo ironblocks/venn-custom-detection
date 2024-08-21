@@ -1,18 +1,36 @@
-import { plainToInstance } from 'class-transformer'
+import { DetectionRequest, DetectionResponse } from './dtos'
 
-import { DetectorResponse, DetectRequest } from './dtos'
-
-// For this example, we'll just return a mock response, you can implement any logic
+/**
+ * DetectionService
+ *
+ * Implements a `detect` method that receives an enriched view of an
+ * EVM compatible transaction (i.e. `DetectionRequest`)
+ * and returns a `DetectionResponse`
+ *
+ * API Reference:
+ * https://github.com/ironblocks/venn-custom-detection/blob/master/docs/requests-responses.docs.md
+ */
 export class DetectionService {
-    public static detect(request: DetectRequest): DetectorResponse {
-        return plainToInstance(DetectorResponse, {
-            requestId: request.id,
-            chainId: request.chainId,
-            detected: Math.random() < 0.5, // Random detection for demonstration
-            protocolAddress: request.protocolAddress,
-            protocolName: request.protocolName,
-            message: 'Example message',
-            error: false,
+    /**
+     * Update this implementation code to insepct the `DetectionRequest`
+     * based on your custom business logic
+     */
+    public static detect(request: DetectionRequest): DetectionResponse {
+        /**
+         * For this "Hello World" style boilerplate
+         * we're mocking detection results using
+         * some random value
+         */
+        const detectionResult = Math.random() < 0.5
+
+        /**
+         * Wrap our response in a `DetectionResponse` object
+         */
+        return new DetectionResponse({
+            request,
+            detectionInfo: {
+                detected: detectionResult,
+            },
         })
     }
 }

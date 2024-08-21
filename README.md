@@ -7,96 +7,107 @@
 ![Yarn](https://img.shields.io/badge/yarn-%232C8EBB.svg?style=for-the-badge&logo=yarn&logoColor=white)
 
 # Venn Custom Detector boilerplate
-Template for easy integration with Venn Security Network as Security Provider. Venn comes with own detectors built-in, but it is also allowed to Security Providers to write own security logic.
+A boilerplate for getting started with Venn as a Security Provider. Use is as a starting point to build your own custom detectors on Venn Network.
 
-[What is Venn?](https://docs.venn.build/)
+> 📚 [What is Venn?](https://docs.venn.build/)
 
 ## Table of Contents
 - [Introduction](#venn-custom-detector-boilerplate)
 - [Quick Start](#quick-start)
-- [Description](#description)
-- [Usage:](#usage)
-    - [Own implementation](#own-implementation)
-    - [Env](#env)
-    - [Development](#development)
-    - [Production](#production)
+- [What's inside?](#-whats-inside)
+- [Local development:](#️-local-development)
+- [Deploy to production](#-deploy-to-production)
 
-## Quick start
-1. Clone this repo
-2. Open `src/modules/detection-module/service.ts`
-```ts
-import { plainToInstance } from 'class-transformer'
+## ✨ Quick start
+1. Clone or fork this repo and install dependencies using `yarn install` _(or `npm install`)_
+2. Find the detection service under: `src/modules/detection-module/service.ts`
 
-import { DetectorResponse, DetectRequest } from './dtos'
+    ```ts
+    import { DetectionResponse, DetectionRequest } from './dtos'
 
-// For this example, we'll just return a mock response, you can implement any logic
-export class DetectionService {
-    public static detect(request: DetectRequest): DetectorResponse {
-        return plainToInstance(DetectorResponse, {
-            requestId: request.id,
-            chainId: request.chainId,
-            detected: Math.random() < 0.5, // Random detection for demonstration
-            protocolAddress: request.protocolAddress,
-            protocolName: request.protocolName,
-            message: 'Example message',
-            error: false,
-        })
+    /**
+     * DetectionService
+     *
+     * Implements a `detect` method that receives an enriched view of an
+     * EVM compatible transaction (i.e. `DetectionRequest`)
+     * and returns a `DetectionResponse`
+     *
+     * API Reference:
+     * https://github.com/ironblocks/venn-custom-detection/blob/master/docs/requests-responses.docs.md
+     */
+    export class DetectionService {
+        /**
+         * Update this implementation code to insepct the `DetectionRequest`
+         * based on your custom business logic
+         */
+        public static detect(request: DetectionRequest): DetectionResponse {
+            
+            /**
+             * For this "Hello World" style boilerplate
+             * we're mocking detection results using
+             * some random value
+             */
+            const detectionResult = Math.random() < 0.5;
+
+
+            /**
+             * Wrap our response in a `DetectionResponse` object
+             */
+            return new DetectionResponse({
+                request,
+                detectionInfo: {
+                    detected: detectionResult,
+                },
+            });
+        }
     }
-}
-```
-3. Implement own `detect` method that will accept `DetectRequest` and return `DetectorResponse`. More **detailed info about requests-responses** structure can be find [here](https://github.com/ironblocks/venn-custom-detection/blob/master/docs/requests-responses.docs.md).
-4. Run `yarn dev`
-5. That's it! Custom detector service is up and running in dev mode.
+    ```
 
-## Description
-Template is pre-configured as `Node.js` + `Express.js` web-service, that can be used to write own security logic. Main goal of this repo is to ease this process.
+3. Implement your own logic in the `detect` method
+4. Run `yarn dev` _(or `npm run dev`)_
+5. That's it! Your custom detector service is now ready to inspect transaction
 
-Templates includes:
-- `eslint` configuration
-- `prettier` configuration
-- `jest` testing setup
-- `Dockerfile`
-- `ErrorHandler` for processing errors
-- `class-validator` validations
-- `logger` configured with log levels and timestamp. Log example:
+## 📦 What's inside?
+This boilerplate is built using `Express.js`, and written in `TypeScript` using `NodeJS`.  
+You can use it as-is by adding your own security logic to it, or as a reference point when using a different programming language.
+
+**Notes on the API**
+1. Venn expects your detector to be available on port `80`
+2. Venn expects your detector to be available at: `$HOST/detect/:detectorName`
+3. Your detector will get a `DetectionRequest`, and is expected to respond with a `DetectionResponse`
+
+See our [API Reference](https://github.com/ironblocks/venn-custom-detection/blob/master/docs/requests-responses.docs.md) for more information.
+
+## 🛠️ Local Development
+
+**Environment Setup**
+
+Create a `.env` file with:
+
 ```bash
-[2024-08-16 11:18:31] debug: detect request started. Request id: unique-id
-```
-
-
-## Usage
-### Own implementation
-As an example you can find `src/modules/detection-module` where your security logic should be implemented.
-
-**Crucial moments:**
-- Custom detector **endpoint** is standardized and **ALWAYS** should be `$BASE_URL/detect/:detectorName`
-- Custom detector **request and response payloads** are **immutable** and should remain as they declared
-
-### Env
-`.env` file may contain following variables. Can be extended to match your needs.
-```
 PORT=3000
 HOST=localhost
 LOG_LEVEL=debug
 ```
 
-### Development
-Service is using `nodemon`
+**Runing In Dev Mode**
 ```bash
-yarn        # install dependencies
-yarn dev    # start dev server
+yarn        # or npm install
+yarn dev    # or npm run dev
 ```
 
-### Production
-You can build production release in to ways:
-1. **Regular build**
+## 🚀 Deploy To Production
+
+**Manual Build**
+
 ```bash
-yarn build      # compiling typescript to javascript
-yarn preview    # test start of production server
-```
-2. **Docker build**
-```bash
-docker build -f Dockerfile . -t venn-custom-detector-svc # creating docker image
+yarn build      # or npm run build
+yarn start      # or npm run start
 ```
 
+
+**Using Docker**
+```bash
+docker build -f Dockerfile . -t my-custom-detector
+```
 

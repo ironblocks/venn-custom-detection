@@ -2,7 +2,7 @@ import { name, version } from '@root/package.json'
 import request from 'supertest'
 
 import { app, server } from '@/app'
-import { DetectorResponse, DetectRequest } from '@/modules/detection-module/dtos'
+import { DetectionRequest, DetectionResponse } from '@/modules/detection-module/dtos'
 import { HTTP_STATUS_CODES } from '@/types'
 
 const ethereumAddress = '0xfdD055Cf3EaD343AD51f4C7d1F12558c52BaDFA5'
@@ -40,7 +40,7 @@ describe('Service Tests', () => {
     })
 
     describe('Detection Controller', () => {
-        const requestPayload: Partial<DetectRequest> = {
+        const requestPayload: Partial<DetectionRequest> = {
             id: 'unique-id',
             chainId: 1,
             hash: 'some hash',
@@ -83,7 +83,7 @@ describe('Service Tests', () => {
                 .send(requestPayload)
                 .set('Content-Type', 'application/json')
 
-            const body: DetectorResponse = response.body
+            const body: DetectionResponse = response.body
 
             // Assert
             expect(response.status).toBe(HTTP_STATUS_CODES.OK)

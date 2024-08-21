@@ -4,18 +4,18 @@ import { Request, Response } from 'express'
 import { logger } from '@/app'
 import { ErrorHandler, validateRequest } from '@/helpers'
 import {
-    DetectorRequestParams,
-    DetectRequest,
-    toDetectorResponse,
+    DetectionRequest,
+    DetectionRequestParams,
+    toDetectionResponse,
 } from '@/modules/detection-module/dtos'
 import { DetectionService } from '@/modules/detection-module/service'
 import { PublicClassFields } from '@/types'
 
 export const detect = async (
-    req: Request<DetectorRequestParams, PublicClassFields<DetectRequest>>,
+    req: Request<DetectionRequestParams, PublicClassFields<DetectionRequest>>,
     res: Response,
 ) => {
-    const request = plainToInstance(DetectRequest, { ...req.body, ...req.params })
+    const request = plainToInstance(DetectionRequest, { ...req.body, ...req.params })
 
     logger.debug(`detect request started. Request id: ${request.id}`)
 
@@ -29,7 +29,7 @@ export const detect = async (
         logger.debug('detect request finished succesfully')
 
         // return response
-        res.json(toDetectorResponse(result))
+        res.json(toDetectionResponse(result))
     } catch (error) {
         // handle errors
         ErrorHandler.processApiError(res, error)
