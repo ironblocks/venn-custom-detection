@@ -9,11 +9,11 @@ import {
     ValidateNested,
 } from 'class-validator'
 
-export type DetectorRequestParams = {
+export type DetectionRequestParams = {
     detectorName: string
 }
 
-export class DetectRequestTraceLog {
+export class DetectionRequestTraceLog {
     @IsEthereumAddress()
     @IsString()
     address!: string
@@ -26,7 +26,7 @@ export class DetectRequestTraceLog {
     topics!: string[]
 }
 
-export class DetectRequestTraceCall {
+export class DetectionRequestTraceCall {
     @IsEthereumAddress()
     @IsString()
     from!: string
@@ -48,7 +48,7 @@ export class DetectRequestTraceCall {
     gasUsed!: string
 }
 
-export class DetectRequestTrace {
+export class DetectionRequestTrace {
     @IsString()
     transactionHash!: string
 
@@ -80,16 +80,16 @@ export class DetectRequestTrace {
 
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => DetectRequestTraceCall)
-    calls!: DetectRequestTraceCall[]
+    @Type(() => DetectionRequestTraceCall)
+    calls!: DetectionRequestTraceCall[]
 
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => DetectRequestTraceLog)
-    logs!: DetectRequestTraceLog[]
+    @Type(() => DetectionRequestTraceLog)
+    logs!: DetectionRequestTraceLog[]
 }
 
-export class DetectRequest {
+export class DetectionRequest {
     @IsString()
     detectorName!: string
 
@@ -110,8 +110,8 @@ export class DetectRequest {
     protocolAddress!: string
 
     @ValidateNested()
-    @Type(() => DetectRequestTrace)
-    trace!: DetectRequestTrace
+    @Type(() => DetectionRequestTrace)
+    trace!: DetectionRequestTrace
 
     @IsObject()
     @IsOptional()

@@ -14,20 +14,16 @@ A boilerplate for getting started with Venn as a Security Provider. Use is as a 
 ## Table of Contents
 - [Introduction](#venn-custom-detector-boilerplate)
 - [Quick Start](#quick-start)
-- [Description](#description)
-- [Usage:](#usage)
-    - [Own implementation](#own-implementation)
-    - [Env](#env)
-    - [Development](#development)
-    - [Production](#production)
+- [What's inside?](#-whats-inside)
+- [Local development:](#️-local-development)
+- [Deploy to production](#-deploy-to-production)
 
 ## ✨ Quick start
 1. Clone or fork this repo and install dependencies using `yarn install` _(or `npm install`)_
 2. Find the detection service under: `src/modules/detection-module/service.ts`
 
     ```ts
-    import { plainToInstance } from 'class-transformer'
-    import { DetectorResponse, DetectRequest } from './dtos'
+    import { DetectionResponse, DetectionRequest } from './dtos'
 
     /**
      * DetectionService
@@ -44,7 +40,7 @@ A boilerplate for getting started with Venn as a Security Provider. Use is as a 
          * Update this implementation code to insepct the `DetectionRequest`
          * based on your custom business logic
          */
-        public static detect(request: DetectRequest): DetectorResponse {
+        public static detect(request: DetectionRequest): DetectionResponse {
             
             /**
              * For this "Hello World" style boilerplate
@@ -58,8 +54,10 @@ A boilerplate for getting started with Venn as a Security Provider. Use is as a 
              * Wrap our response in a `DetectionResponse` object
              */
             return new DetectionResponse({
-                requestRef: request,
-                detected: detectionResponse
+                request,
+                detectionInfo: {
+                    detected: detectionResult,
+                },
             });
         }
     }
