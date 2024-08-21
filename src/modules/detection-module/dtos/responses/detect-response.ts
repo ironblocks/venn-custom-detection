@@ -36,7 +36,7 @@ export class DetectionResponse {
     }
 }
 
-class DetectionResponseDRO {
+class DetectionResponseDTO {
     @Expose()
     requestId!: string
 
@@ -62,6 +62,6 @@ class DetectionResponseDRO {
     additionalData?: Record<string, unknown>
 }
 
-export const toDetectionResponse = (detectorEntity: DetectionResponse): DetectionResponseDRO => {
-    return plainToInstance(DetectionResponseDRO, detectorEntity)
+export const toDetectionResponse = (detectorEntity: DetectionResponse): DetectionResponseDTO => {
+    return plainToInstance(DetectionResponseDTO, detectorEntity)
 }
