@@ -42,6 +42,7 @@ describe('Service Tests', () => {
     describe('Detection Controller', () => {
         const requestPayload: Partial<DetectionRequest> = {
             id: 'unique-id',
+            detectorName: 'test-detector',
             chainId: 1,
             hash: 'some hash',
             protocolName: 'some protocol',
@@ -79,7 +80,7 @@ describe('Service Tests', () => {
         test('detect success', async () => {
             // Act
             const response = await request(app)
-                .post('/detect/test-detector')
+                .post('/detect')
                 .send(requestPayload)
                 .set('Content-Type', 'application/json')
 
@@ -95,7 +96,7 @@ describe('Service Tests', () => {
 
         test('detect validation', async () => {
             const response = await request(app)
-                .post('/detect/test-detector')
+                .post('/detect')
                 .send({ ...requestPayload, protocolAddress: 'definitely not address' })
                 .set('Content-Type', 'application/json')
 
@@ -104,7 +105,7 @@ describe('Service Tests', () => {
 
         test('detect validation nested', async () => {
             const response = await request(app)
-                .post('/detect/test-detector')
+                .post('/detect')
                 .send({
                     ...requestPayload,
                     trace: {

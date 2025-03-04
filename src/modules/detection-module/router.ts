@@ -4,6 +4,6 @@ import * as DetectionController from './controller'
 
 const detectionRouter = Router()
 
-detectionRouter.post('/:detectorName', DetectionController.detect)
+detectionRouter.post('/', DetectionController.detect)
 
 export { detectionRouter }

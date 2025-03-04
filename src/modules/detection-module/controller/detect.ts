@@ -3,19 +3,15 @@ import { Request, Response } from 'express'
 
 import { logger } from '@/app'
 import { ErrorHandler, validateRequest } from '@/helpers'
-import {
-    DetectionRequest,
-    DetectionRequestParams,
-    toDetectionResponse,
-} from '@/modules/detection-module/dtos'
+import { DetectionRequest, toDetectionResponse } from '@/modules/detection-module/dtos'
 import { DetectionService } from '@/modules/detection-module/service'
 import { PublicClassFields } from '@/types'
 
 export const detect = async (
-    req: Request<DetectionRequestParams, PublicClassFields<DetectionRequest>>,
+    req: Request<Record<string, string>, PublicClassFields<DetectionRequest>>,
     res: Response,
 ) => {
-    const request = plainToInstance(DetectionRequest, { ...req.body, ...req.params })
+    const request = plainToInstance(DetectionRequest, req.body)
 
     logger.debug(`detect request started. Request id: ${request.id}`)
 

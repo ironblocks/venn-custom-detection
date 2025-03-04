@@ -9,10 +9,6 @@ import {
     ValidateNested,
 } from 'class-validator'
 
-export type DetectionRequestParams = {
-    detectorName: string
-}
-
 export class DetectionRequestTraceLog {
     @IsEthereumAddress()
     @IsString()
@@ -43,10 +39,17 @@ export class DetectionRequestTraceCall {
     output?: string
 
     @IsString()
-    value!: string
+    @IsOptional()
+    value?: string
 
     @IsString()
     gasUsed!: string
+
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => DetectionRequestTraceCall)
+    @IsOptional()
+    calls?: DetectionRequestTraceCall[]
 }
 
 export class DetectionRequestTrace {
@@ -67,7 +70,8 @@ export class DetectionRequestTrace {
     to!: string
 
     @IsString()
-    value!: string
+    @IsOptional()
+    value?: string
 
     @IsString()
     gas!: string
@@ -85,7 +89,8 @@ export class DetectionRequestTrace {
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => DetectionRequestTraceCall)
-    calls!: DetectionRequestTraceCall[]
+    @IsOptional()
+    calls?: DetectionRequestTraceCall[]
 
     @IsArray()
     @IsOptional()
@@ -94,12 +99,31 @@ export class DetectionRequestTrace {
     logs?: DetectionRequestTraceLog[]
 }
 
+export class DetectionRequestPrestate {
+    @IsString()
+    balance!: string
+
+    @IsOptional()
+    @IsNumber()
+    nonce?: number
+
+    @IsOptional()
+    @IsString()
+    code?: string
+
+    @IsOptional()
+    @IsObject()
+    storage?: Record<string, string>
+}
+
 export class DetectionRequest {
     @IsString()
-    detectorName!: string
+    @IsOptional()
+    detectorName?: string
 
     @IsString()
-    id!: string
+    @IsOptional()
+    id?: string
 
     @IsNumber()
     chainId!: number
@@ -108,15 +132,21 @@ export class DetectionRequest {
     hash!: string
 
     @IsString()
-    protocolName!: string
+    @IsOptional()
+    protocolName?: string
 
     @IsEthereumAddress()
     @IsString()
-    protocolAddress!: string
+    @IsOptional()
+    protocolAddress?: string
 
     @ValidateNested()
     @Type(() => DetectionRequestTrace)
     trace!: DetectionRequestTrace
+
+    @ValidateNested({ each: true })
+    @Type(() => DetectionRequestPrestate)
+    pre!: Record<string, DetectionRequestPrestate>
 
     @IsObject()
     @IsOptional()

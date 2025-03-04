@@ -25,10 +25,10 @@ export class DetectionResponse {
         request,
         detectionInfo: { error, message, detected },
     }: DetectionResponseInitOpts) {
-        this.requestId = request.id
+        this.requestId = request.id ?? ''
         this.chainId = request.chainId
-        this.protocolAddress = request.protocolAddress
-        this.protocolName = request.protocolName
+        this.protocolAddress = request.protocolAddress ?? ''
+        this.protocolName = request.protocolName ?? ''
         this.additionalData = request.additionalData
         this.error = error
         this.message = message
