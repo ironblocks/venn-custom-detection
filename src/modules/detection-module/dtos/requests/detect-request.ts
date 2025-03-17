@@ -86,6 +86,12 @@ export class DetectionRequestTrace {
     @IsOptional()
     output?: string
 
+    @IsObject()
+    pre!: Record<string, DetectionRequestState>
+
+    @IsObject()
+    post!: Record<string, DetectionRequestState>
+
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => DetectionRequestTraceCall)
@@ -99,7 +105,7 @@ export class DetectionRequestTrace {
     logs?: DetectionRequestTraceLog[]
 }
 
-export class DetectionRequestPrestate {
+export class DetectionRequestState {
     @IsString()
     balance!: string
 
@@ -143,10 +149,6 @@ export class DetectionRequest {
     @ValidateNested()
     @Type(() => DetectionRequestTrace)
     trace!: DetectionRequestTrace
-
-    @ValidateNested({ each: true })
-    @Type(() => DetectionRequestPrestate)
-    pre!: Record<string, DetectionRequestPrestate>
 
     @IsObject()
     @IsOptional()

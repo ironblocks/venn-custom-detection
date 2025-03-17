@@ -57,6 +57,17 @@ describe('Service Tests', () => {
                 gas: '100000',
                 gasUsed: '100',
                 value: '10',
+                pre: {
+                    [zeroAddress]: {
+                        balance: '0x..',
+                        nonce: 2,
+                    },
+                },
+                post: {
+                    [zeroAddress]: {
+                        balance: '0x..',
+                    },
+                },
                 logs: [
                     {
                         address: ethereumAddress,
